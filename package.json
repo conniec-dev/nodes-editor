@@ -9,8 +9,10 @@
   },
   "dependencies": {
     "core-js": "^3.6.5",
+    "drawflow": "^0.0.54",
     "vue": "^3.0.0",
     "vue-router": "^4.0.0-0",
+    "vue-sidebar-menu": "^5.1.2",
     "vuex": "^4.0.0-0"
   },
   "devDependencies": {
