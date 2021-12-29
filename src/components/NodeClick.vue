@@ -5,7 +5,7 @@
     </div>
     <div class="body">
       <h5 class="subtitle">Number</h5>
-      <input type="number" df-name />
+      <input class="input-area" type="number" df-name />
     </div>
   </div>
 </template>
@@ -22,6 +22,10 @@ export default {
 </script>
 
 <style>
+.input-area {
+  width: 100%;
+}
+
 .subtitle {
   text-align: right;
 }

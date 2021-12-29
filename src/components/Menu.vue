@@ -1,21 +1,22 @@
-<style scoped>
-.container {
-  display: flex;
-  flex-direction: column;
-  height: 300px;
-  align-content: flex-start;
-  justify-content: space-evenly;
-  border: 1px solid red;
-}
+<template>
+  <h2>Menu</h2>
+  <div class="item" v-for="item in menuItems" :key="item.itemName">
+    {{ item.itemName }}
+  </div>
+</template>
 
-.item-title {
-  font-size: 25px;
-}
-
-.item {
-  font-size: 14px;
-  margin-top: 15px;
-  width: 150px;
-  border-bottom: 2px solid blue;
-}
-</style>
+<script>
+export default {
+  data() {
+    return {
+      menuItems: [
+        { icon: " ", itemName: "Code Block", id: "1" },
+        { icon: ".", itemName: "Variable", id: "2" },
+        { icon: ".", itemName: "Arithmetic Operations", id: "3" },
+        { icon: ".", itemName: "Conditionals", id: "4" },
+        { icon: ".", itemName: "For Loop", id: "5" },
+      ],
+    };
+  },
+};
+</script>
