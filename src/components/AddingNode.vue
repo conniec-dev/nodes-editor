@@ -1,21 +1,17 @@
 <template>
   <div class="card-devices">
     <div class="header">
-      <h3>{{ name }}</h3>
+      <h3>Add</h3>
     </div>
-    <div class="body">
-      <output></output>
-    </div>
+    <div class="body"></div>
   </div>
 </template>
 
 <script>
 export default {
-  props: ["name"],
+  props: [],
   methods: {
-    Clicked() {
-      alert("hello-drawflow");
-    },
+    Clicked() {},
   },
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
   <div class="everything">
     <div class="menu-container">
-      <Menu />
+      <Menu :menuItems="menuItems" @itemClick="handleItemClick" />
     </div>
     <div id="drawflow"></div>
   </div>
@@ -11,8 +11,10 @@
 import { h, getCurrentInstance, render } from "vue";
 /*eslint-disable */
 import Menu from "./components/Menu.vue";
-import NodeClick from "./components/NodeClick.vue";
+import VariableNode from "./components/VariableNode.vue";
+import NumberNode from "./components/NumberNode.vue";
 import AddingNode from "./components/AddingNode.vue";
+import CodeBlockNode from "./components/CodeBlockNode.vue";
 import Drawflow from "drawflow";
 import styleDrawflow from "drawflow/dist/drawflow.min.css"; // eslint-disable-line no-use-before-define
 /*eslint-enable */
@@ -25,6 +27,53 @@ export default {
   data() {
     return {
       editor: null,
+      menuItems: [
+        {
+          id: "code_block",
+          itemName: "Code Block",
+          icon: "../icons/block.svg",
+        },
+        {
+          id: "variable",
+          itemName: "Variable",
+          icon: "../icons/box.svg",
+        },
+        {
+          id: "number",
+          itemName: "Number",
+          icon: "../icons/arithmetic_operations.svg",
+        },
+        {
+          id: "add",
+          itemName: "Add",
+          icon: "../icons/arithmetic_operations.svg",
+        },
+        {
+          id: "subtract",
+          itemName: "Subtract",
+          icon: "../icons/arithmetic_operations.svg",
+        },
+        {
+          id: "multiplication",
+          itemName: "Multiplication",
+          icon: "../icons/arithmetic_operations.svg",
+        },
+        {
+          id: "division",
+          itemName: "Division",
+          icon: "../icons/arithmetic_operations.svg",
+        },
+        {
+          id: "conditional",
+          itemName: "Conditional",
+          icon: ".",
+        },
+        {
+          id: "for_loop",
+          itemName: "For Loop",
+          icon: ".",
+        },
+      ],
     };
   },
 
@@ -42,32 +91,80 @@ export default {
     );
 
     this.editor.start();
-    const props1 = { name: "Number" };
+
+    // Node registering
+    const codeBlockNodeDefaultProps = {};
+    const variableNodeDefaultProps = {};
+    const numberNodeDefaultProps = {};
+    const addingNodeDefaultProps = {};
+
     const options = {};
-    this.editor.registerNode("NodeClick", NodeClick, props1, options);
-    const data = { name: "" };
-    this.editor.addNode("Name", 0, 1, 1, 1, "Class", data, "NodeClick", "vue");
-    this.editor.addNode("Name2", 0, 1, 1, 1, "Class", data, "NodeClick", "vue");
-
-    const props2 = { name: "Add" };
-    this.editor.registerNode("AddingNode", AddingNode, props2, options);
-
-    this.editor.addNode(
-      "Name3",
-      2,
-      1,
-      1,
-      1,
-      "Class",
-      data,
+    this.editor.registerNode(
+      "CodeBlockNode",
+      CodeBlockNode,
+      codeBlockNodeDefaultProps,
+      options
+    );
+    this.editor.registerNode(
+      "VariableNode",
+      VariableNode,
+      variableNodeDefaultProps,
+      options
+    );
+    this.editor.registerNode(
+      "NumberNode",
+      NumberNode,
+      numberNodeDefaultProps,
+      options
+    );
+    this.editor.registerNode(
       "AddingNode",
+      AddingNode,
+      addingNodeDefaultProps,
+      options
+    );
+    this.editor.registerNode(
+      "CodeBlockNode",
+      CodeBlockNode,
+      codeBlockNodeDefaultProps,
+      options
+    );
+
+    // Test node creation
+    // this.editor.addNode("Name3", 2, 1, 1, 1, "Class", {}, "AddingNode", "vue");
+    this.editor.addNode(
+      "name4",
+      0,
+      0,
+      10,
+      10,
+      "Class",
+      {},
+      "CodeBlockNode",
       "vue"
     );
   },
-
   methods: {
-    exportData() {
-      alert(JSON.stringify(this.editor.export()));
+    handleItemClick({ itemId }) {
+      // Create a node
+      const numberOfInputs = 0;
+      const numberOfOutputs = 1;
+      const props = {};
+      const coords = {
+        x: 30,
+        y: 30,
+      };
+      this.editor.addNode(
+        `${itemId}_unique_id_test`,
+        numberOfInputs,
+        numberOfOutputs,
+        coords.x,
+        coords.y,
+        "Class",
+        props,
+        "NumberNode",
+        "vue"
+      );
     },
   },
 };

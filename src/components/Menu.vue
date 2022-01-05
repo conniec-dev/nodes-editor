@@ -1,22 +1,28 @@
 <template>
   <h2>Menu</h2>
-  <div class="item" v-for="item in menuItems" :key="item.itemName">
+  <div
+    class="item"
+    v-for="item in menuItems"
+    :key="item.itemName"
+    @click="handleItemClick(item.id)"
+  >
+    <img src="../icons/block.svg" width="20" height="20" />
     {{ item.itemName }}
   </div>
 </template>
 
 <script>
 export default {
+  props: ["menuItems"],
+  emits: ["itemClick"],
+  components: {},
   data() {
-    return {
-      menuItems: [
-        { icon: " ", itemName: "Code Block", id: "1" },
-        { icon: ".", itemName: "Variable", id: "2" },
-        { icon: ".", itemName: "Arithmetic Operations", id: "3" },
-        { icon: ".", itemName: "Conditionals", id: "4" },
-        { icon: ".", itemName: "For Loop", id: "5" },
-      ],
-    };
+    return {};
+  },
+  methods: {
+    handleItemClick(itemId) {
+      this.$emit("itemClick", { itemId });
+    },
   },
 };
 </script>

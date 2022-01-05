@@ -1,7 +1,7 @@
 <template>
   <div class="card-devices">
     <div class="header">
-      <h3>{{ name }}</h3>
+      <h3>Number</h3>
     </div>
     <div class="body">
       <h5 class="subtitle">Number</h5>
@@ -12,12 +12,8 @@
 
 <script>
 export default {
-  props: ["name"],
-  methods: {
-    Clicked() {
-      alert("hello-drawflow");
-    },
-  },
+  props: [],
+  methods: {},
 };
 </script>
 
