@@ -15,6 +15,9 @@ import VariableNode from "./components/VariableNode.vue";
 import NumberNode from "./components/NumberNode.vue";
 import AddingNode from "./components/AddingNode.vue";
 import CodeBlockNode from "./components/CodeBlockNode.vue";
+import SubtractNode from "./components/SubtractNode.vue";
+import MultiplicationNode from "./components/MultiplicationNode.vue";
+import DivisionNode from "./components/DivisionNode.vue";
 import Drawflow from "drawflow";
 import styleDrawflow from "drawflow/dist/drawflow.min.css"; // eslint-disable-line no-use-before-define
 /*eslint-enable */
@@ -97,6 +100,9 @@ export default {
     const variableNodeDefaultProps = {};
     const numberNodeDefaultProps = {};
     const addingNodeDefaultProps = {};
+    const subtractNodeDefaultProps = {};
+    const multiplicationNodeDefaultProps = {};
+    const divisionNodeDefaultProps = {};
 
     const options = {};
     this.editor.registerNode(
@@ -124,47 +130,129 @@ export default {
       options
     );
     this.editor.registerNode(
-      "CodeBlockNode",
-      CodeBlockNode,
-      codeBlockNodeDefaultProps,
+      "SubtractNode",
+      SubtractNode,
+      subtractNodeDefaultProps,
       options
     );
-
+    this.editor.registerNode(
+      "MultiplicationNode",
+      MultiplicationNode,
+      multiplicationNodeDefaultProps,
+      options
+    );
+    this.editor.registerNode(
+      "MultiplicationNode",
+      MultiplicationNode,
+      multiplicationNodeDefaultProps,
+      options
+    );
+    this.editor.registerNode(
+      "DivisionNode",
+      DivisionNode,
+      divisionNodeDefaultProps,
+      options
+    );
     // Test node creation
     // this.editor.addNode("Name3", 2, 1, 1, 1, "Class", {}, "AddingNode", "vue");
-    this.editor.addNode(
-      "name4",
-      0,
-      0,
-      10,
-      10,
-      "Class",
-      {},
-      "CodeBlockNode",
-      "vue"
-    );
   },
   methods: {
     handleItemClick({ itemId }) {
       // Create a node
       const numberOfInputs = 0;
+      const numberOfInputsForOperations = 2;
       const numberOfOutputs = 1;
       const props = {};
       const coords = {
         x: 30,
         y: 30,
       };
-      this.editor.addNode(
-        `${itemId}_unique_id_test`,
-        numberOfInputs,
-        numberOfOutputs,
-        coords.x,
-        coords.y,
-        "Class",
-        props,
-        "NumberNode",
-        "vue"
-      );
+
+      if (itemId === "code_block") {
+        this.editor.addNode(
+          `${itemId}_unique_id_test`,
+          numberOfInputs,
+          numberOfOutputs,
+          coords.x,
+          coords.y,
+          "Class",
+          props,
+          "CodeBlockNode",
+          "vue"
+        );
+      } else if (itemId === "variable") {
+        this.editor.addNode(
+          `${itemId}_unique_id_test`,
+          numberOfInputs,
+          numberOfOutputs,
+          coords.x,
+          coords.y,
+          "Class",
+          props,
+          "VariableNode",
+          "vue"
+        );
+      } else if (itemId === "number") {
+        this.editor.addNode(
+          `${itemId}_unique_id_test`,
+          numberOfInputs,
+          numberOfOutputs,
+          coords.x,
+          coords.y,
+          "Class",
+          props,
+          "NumberNode",
+          "vue"
+        );
+      } else if (itemId === "add") {
+        this.editor.addNode(
+          `${itemId}_unique_id_test`,
+          numberOfInputsForOperations,
+          numberOfOutputs,
+          coords.x,
+          coords.y,
+          "Class",
+          props,
+          "AddingNode",
+          "vue"
+        );
+      } else if (itemId === "subtract") {
+        this.editor.addNode(
+          `${itemId}_unique_id_test`,
+          numberOfInputsForOperations,
+          numberOfOutputs,
+          coords.x,
+          coords.y,
+          "Class",
+          props,
+          "SubtractNode",
+          "vue"
+        );
+      } else if (itemId === "multiplication") {
+        this.editor.addNode(
+          `${itemId}_unique_id_test`,
+          numberOfInputsForOperations,
+          numberOfOutputs,
+          coords.x,
+          coords.y,
+          "Class",
+          props,
+          "MultiplicationNode",
+          "vue"
+        );
+      } else if (itemId === "division") {
+        this.editor.addNode(
+          `${itemId}_unique_id_test`,
+          numberOfInputsForOperations,
+          numberOfOutputs,
+          coords.x,
+          coords.y,
+          "Class",
+          props,
+          "DivisionNode",
+          "vue"
+        );
+      }
     },
   },
 };

@@ -3,7 +3,7 @@
     <div class="header">
       <h3>Variable</h3>
       <h4>Name</h4>
-      <input />
+      <input class="input-area" type="text" />
       <h4>Value</h4>
       <input class="input-area" type="text" />
     </div>
