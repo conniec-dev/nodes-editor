@@ -18,7 +18,18 @@ import CodeBlockNode from "./components/CodeBlockNode.vue";
 import SubtractNode from "./components/SubtractNode.vue";
 import MultiplicationNode from "./components/MultiplicationNode.vue";
 import DivisionNode from "./components/DivisionNode.vue";
+import codeBlockIcon from "./icons/block.svg";
+import boxIcon from "./icons/box.svg";
+import numberIcon from "./icons/number.svg";
+import addIcon from "./icons/add.svg";
+import subtractIcon from "./icons/subtract.svg";
+import multiplicationIcon from "./icons/multiplication.svg";
+import divisionIcon from "./icons/division.svg";
+import conditionalIcon from "./icons/conditionals.svg";
+import forLoopIcon from "./icons/for_loop.svg";
+
 import Drawflow from "drawflow";
+
 import styleDrawflow from "drawflow/dist/drawflow.min.css"; // eslint-disable-line no-use-before-define
 /*eslint-enable */
 
@@ -34,47 +45,47 @@ export default {
         {
           id: "code_block",
           itemName: "Code Block",
-          icon: "../icons/block.svg",
+          icon: codeBlockIcon,
         },
         {
           id: "variable",
           itemName: "Variable",
-          icon: "../icons/box.svg",
+          icon: boxIcon,
         },
         {
           id: "number",
           itemName: "Number",
-          icon: "../icons/arithmetic_operations.svg",
+          icon: numberIcon,
         },
         {
           id: "add",
           itemName: "Add",
-          icon: "../icons/arithmetic_operations.svg",
+          icon: addIcon,
         },
         {
           id: "subtract",
           itemName: "Subtract",
-          icon: "../icons/arithmetic_operations.svg",
+          icon: subtractIcon,
         },
         {
           id: "multiplication",
           itemName: "Multiplication",
-          icon: "../icons/arithmetic_operations.svg",
+          icon: multiplicationIcon,
         },
         {
           id: "division",
           itemName: "Division",
-          icon: "../icons/arithmetic_operations.svg",
+          icon: divisionIcon,
         },
         {
           id: "conditional",
           itemName: "Conditional",
-          icon: ".",
+          icon: conditionalIcon,
         },
         {
           id: "for_loop",
           itemName: "For Loop",
-          icon: ".",
+          icon: forLoopIcon,
         },
       ],
     };
@@ -275,23 +286,28 @@ export default {
   flex-direction: column;
   height: 100%;
   align-content: flex-start;
+  align-items: stretch;
   justify-content: space-evenly;
   border: 1px solid blue;
   width: 20%;
 }
 
 .item-title {
-  font-size: 25px;
-  font-weight: bold;
+  font-size: 35px;
+  font-family: "Sora", sans-serif;
+  font-weight: 700;
+  margin-left: 10px;
 }
 
 .item {
   order: 5;
-  font-size: 15px;
-  border: 1px solid orange;
+  font-family: "Sora", sans-serif;
+  font-size: 25px;
+  font-weight: 200;
   height: 100%;
   width: 100%;
-  padding: 10px;
+  padding: 15px;
+  border-top: 1px solid black;
 }
 
 #drawflow {
@@ -301,9 +317,10 @@ export default {
   border: 1px solid olivedrab;
 }
 
-.icon {
-  margin-top: 2px;
-  height: 20px;
-  width: 20px;
+.icons {
+  height: 25px;
+  width: 25px;
+  margin-top: 15px;
+  margin-right: 1px;
 }
 </style>
