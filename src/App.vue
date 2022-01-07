@@ -288,8 +288,8 @@ export default {
   align-content: flex-start;
   align-items: stretch;
   justify-content: space-evenly;
-  border: 1px solid blue;
   width: 20%;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 }
 
 .item-title {
@@ -307,14 +307,13 @@ export default {
   height: 100%;
   width: 100%;
   padding: 15px;
-  border-top: 1px solid black;
+  box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 }
 
 #drawflow {
   display: flex;
   height: 100%;
   width: 80%;
-  border: 1px solid olivedrab;
 }
 
 .icons {
