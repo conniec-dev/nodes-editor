@@ -1,12 +1,12 @@
 <template>
-  <h2>Menu</h2>
+  <h2 class="item-title">Menu</h2>
   <div
     class="item"
     v-for="item in menuItems"
     :key="item.itemName"
     @click="handleItemClick(item.id)"
   >
-    <img src="../icons/block.svg" width="20" height="20" />
+    <img :src="item.icon" class="icons" />
     {{ item.itemName }}
   </div>
 </template>
