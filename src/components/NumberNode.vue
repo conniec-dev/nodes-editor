@@ -5,13 +5,7 @@
     </div>
     <div class="node-body">
       <h5 class="subtitle">Number</h5>
-      <input
-        class="input-area"
-        type="number"
-        id="numbers"
-        df-name
-        @mouseover="getValueInput"
-      />
+      <input class="input-area" type="number" df-name />
     </div>
   </div>
 </template>
@@ -19,12 +13,7 @@
 <script>
 export default {
   props: [],
-  methods: {
-    getValueInput() {
-      let inputValue = document.getElementById("numbers").value;
-      console.log(inputValue);
-    },
-  },
+  methods: {},
 };
 </script>
 
