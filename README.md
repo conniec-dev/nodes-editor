@@ -1,4 +1,4 @@
-# one-node-please
+# nodes-editor
 
 ## Project setup
 ```
