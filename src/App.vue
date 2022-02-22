@@ -4,12 +4,45 @@
       <Menu :menuItems="menuItems" @itemClick="handleItemClick" />
     </div>
     <div id="drawflow"></div>
+    <div id="options-modal-container">
+      <div role="button" @click="toggleModal" id="options-modal-button">
+        <img :src="require('./icons/options.svg')" id="optionsIcon" />
+        Options
+      </div>
+      <OptionsModal @close="toggleModal" :modalActive="modalActive">
+        <div class="modal-content">
+          &nbsp;
+          <div @click="exportData">
+            <img :src="require('./icons/save.svg')" class="options-icons" />
+            &nbsp; Save
+          </div>
+          <div @click="listToggleModal" role="button" id="list-modal-button">
+            <img :src="require('./icons/list.svg')" class="options-icons" />
+            &nbsp; All Programs
+          </div>
+          <div>
+            <img :src="require('./icons/trash.svg')" class="options-icons" />
+            &nbsp; Delete
+          </div>
+        </div>
+      </OptionsModal>
+    </div>
+    <Modal @close="listToggleModal" :listModalActive="listModalActive">
+      <div class="list-modal-content">
+        <h1>This is a Modal Header</h1>
+        {{ listItems }}
+      </div>
+    </Modal>
   </div>
+
+  <div id="modal-container"></div>
 </template>
 
 <script>
-import { h, getCurrentInstance, render } from "vue";
+import { h, getCurrentInstance, render, ref } from "vue";
 /*eslint-disable */
+import OptionsModal from "./components/OptionsModal.vue";
+import Modal from "./components/Modal.vue";
 import Menu from "./components/Menu.vue";
 import VariableNode from "./components/VariableNode.vue";
 import NumberNode from "./components/NumberNode.vue";
@@ -27,6 +60,7 @@ import multiplicationIcon from "./icons/multiplication.svg";
 import divisionIcon from "./icons/division.svg";
 import conditionalIcon from "./icons/conditionals.svg";
 import forLoopIcon from "./icons/for_loop.svg";
+import optionsIcon from "./icons/options.svg";
 
 import Drawflow from "drawflow";
 
@@ -37,10 +71,13 @@ export default {
   name: "App",
   components: {
     Menu,
+    OptionsModal,
+    Modal,
   },
   data() {
     return {
       editor: null,
+      listItems: ["ABCDEFGHIJKLMNOPQRSTUVWXYZ", "AAA"],
       menuItems: [
         {
           id: "code_block",
@@ -89,6 +126,35 @@ export default {
         },
       ],
     };
+  },
+  setup() {
+    const modalActive = ref(false);
+    const toggleModal = () => {
+      modalActive.value = !modalActive.value;
+    };
+
+    const listModalActive = ref(false);
+    const listToggleModal = async () => {
+      listModalActive.value = !listModalActive.value;
+      /////
+      var requestOptions = {
+        method: "GET",
+        redirect: "follow",
+      };
+      try {
+        console.log(`listItems: ${this.listItems}`);
+        const response = await fetch(
+          "http://localhost:8000/programs",
+          requestOptions
+        );
+        const result = response.text();
+        this.listItems.push(result);
+      } catch (error) {
+        console.log("error", error);
+      }
+    };
+
+    return { modalActive, toggleModal, listModalActive, listToggleModal };
   },
 
   mounted() {
@@ -164,6 +230,7 @@ export default {
       divisionNodeDefaultProps,
       options
     );
+
     // Test node creation
     // this.editor.addNode("Name3", 2, 1, 1, 1, "Class", {}, "AddingNode", "vue");
   },
@@ -265,6 +332,29 @@ export default {
         );
       }
     },
+    exportData() {
+      const exportedContent = this.editor.export();
+      console.log(JSON.stringify(exportedContent));
+      var myHeaders = new Headers();
+      myHeaders.append("Content-Type", "application/json");
+
+      const raw = JSON.stringify({
+        name: "test2",
+        drawflow_output: JSON.stringify(exportedContent),
+      });
+
+      const requestOptions = {
+        method: "POST",
+        headers: myHeaders,
+        body: raw,
+        redirect: "follow",
+      };
+
+      fetch("http://localhost:8000/item", requestOptions)
+        .then((response) => response.text())
+        .then((result) => console.log(result))
+        .catch((error) => console.log("error", error));
+    },
   },
 };
 </script>
@@ -308,12 +398,39 @@ export default {
   width: 100%;
   padding: 15px;
   box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
+  cursor: pointer;
 }
 
 #drawflow {
   display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: flex-end;
   height: 100%;
   width: 80%;
+  border: 1px solid red;
+}
+
+#options-modal-container {
+  position: absolute;
+  border: 1px solid blue;
+  right: 0;
+  top: 0;
+  display: inline-flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  align-items: stretch;
+  width: 10%;
+}
+
+#options-modal-button {
+  cursor: pointer;
+}
+
+.modal-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
 }
 
 .icons {
@@ -321,5 +438,46 @@ export default {
   width: 25px;
   margin-top: 15px;
   margin-right: 1px;
+}
+
+.options-icons {
+  height: 25px;
+  width: 25px;
+  margin-top: 2px;
+}
+
+/* .options {
+  font-size: 15px;
+} */
+
+#optionsIcon {
+  height: 35px;
+  width: 35px;
+}
+
+#list-modal-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: rgba(2, 11, 14, 0.276);
+  display: flex;
+  justify-content: center;
+  border: 5px solid green;
+  height: 100%;
+  width: 100%;
+}
+
+.list-modal {
+  border: 1px solid blue;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: space-around;
+  justify-content: space-around;
+  width: 50%;
+}
+
+.list-modal-content {
+  border: 1px solid red;
 }
 </style>
