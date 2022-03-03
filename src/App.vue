@@ -29,8 +29,40 @@
     </div>
     <Modal @close="listToggleModal" :listModalActive="listModalActive">
       <div class="list-modal-content">
-        <h1>This is a Modal Header</h1>
-        {{ listItems }}
+        <h2 class="programs-header">Programs</h2>
+        <div class="container">
+          <div class="row">
+            <div class="col-xs-12">
+              <div class="table-responsive" data-pattern="priority-columns">
+                <table
+                  summary="This tanle shows a list of programs created with Nodes Editor"
+                  class="table table-bordered"
+                >
+                  <thead>
+                    <tr>
+                      <th data-priority="1" class="list-of-programs-header">
+                        Title
+                      </th>
+                      <th data-priority="2" class="list-of-programs-header">
+                        Creation Date
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr
+                      class="list-of-programs"
+                      v-for="program in listOfPrograms"
+                      :key="program.id"
+                    >
+                      <td>{{ program.name }}</td>
+                      <td>{{ program.date }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </Modal>
   </div>
@@ -39,7 +71,7 @@
 </template>
 
 <script>
-import { h, getCurrentInstance, render, ref } from "vue";
+import { h, getCurrentInstance, render } from "vue";
 /*eslint-disable */
 import OptionsModal from "./components/OptionsModal.vue";
 import Modal from "./components/Modal.vue";
@@ -77,7 +109,8 @@ export default {
   data() {
     return {
       editor: null,
-      listItems: ["ABCDEFGHIJKLMNOPQRSTUVWXYZ", "AAA"],
+      listPrograms: [],
+      listOfPrograms: [],
       menuItems: [
         {
           id: "code_block",
@@ -125,36 +158,9 @@ export default {
           icon: forLoopIcon,
         },
       ],
+      modalActive: false,
+      listModalActive: false,
     };
-  },
-  setup() {
-    const modalActive = ref(false);
-    const toggleModal = () => {
-      modalActive.value = !modalActive.value;
-    };
-
-    const listModalActive = ref(false);
-    const listToggleModal = async () => {
-      listModalActive.value = !listModalActive.value;
-      /////
-      var requestOptions = {
-        method: "GET",
-        redirect: "follow",
-      };
-      try {
-        console.log(`listItems: ${this.listItems}`);
-        const response = await fetch(
-          "http://localhost:8000/programs",
-          requestOptions
-        );
-        const result = response.text();
-        this.listItems.push(result);
-      } catch (error) {
-        console.log("error", error);
-      }
-    };
-
-    return { modalActive, toggleModal, listModalActive, listToggleModal };
   },
 
   mounted() {
@@ -355,7 +361,29 @@ export default {
         .then((result) => console.log(result))
         .catch((error) => console.log("error", error));
     },
-  },
+    toggleModal () {
+      this.modalActive = !this.modalActive;
+    },
+    async listToggleModal() {
+      this.listModalActive = !this.listModalActive;
+      var requestOptions = {
+        method: "GET",
+        redirect: "follow",
+      };
+      try {
+        const response = await fetch(
+          "http://localhost:8000/programs",
+          requestOptions
+        );
+        const result = await response.json();
+        this.programsFirebaseResult = result;
+        console.log(`ListPrograms:`, this.programsFirebaseResult);
+        this.listOfPrograms = Object.values(this.programsFirebaseResult);
+      } catch (error) {
+        console.log("error", error);
+      }
+    }
+  }
 };
 </script>
 
@@ -479,5 +507,29 @@ export default {
 
 .list-modal-content {
   border: 1px solid red;
+  display: flex;
+  flex-direction: column;
+  height: 90%;
+}
+
+.programs-header {
+  text-align: initial;
+  padding: 20px 10;
+}
+
+.table {
+  width: 100%;
+  table-layout: auto;
+  border: 1px solid #ddd;
+  border-collapse: collapse;
+}
+/* .table-bordered {
+  border: 1px solid #ddd;
+} */
+
+th,
+td {
+  border: 1px solid #ddd;
+  text-align: center;
 }
 </style>

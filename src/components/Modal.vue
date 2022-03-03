@@ -6,12 +6,11 @@
           <div v-show="listModalActive" class="list-modal-inner">
             <img
               @click="close"
-              :src="require('../icons/close.svg')"
+              :src="require('../icons/close3.svg')"
               class="close-icon"
             />
             <!-- Modal Content  -->
             <slot />
-            <button @click="close" type="button">Close</button>
           </div>
         </transition>
       </div>
@@ -48,5 +47,6 @@ export default {
   height: 30px;
   width: 30px;
   align-self: flex-end;
+  cursor: pointer;
 }
 </style>
