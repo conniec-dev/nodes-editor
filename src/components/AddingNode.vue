@@ -6,12 +6,3 @@
     <div class="body"></div>
   </div>
 </template>
-
-<script>
-export default {
-  props: [],
-  methods: {
-    Clicked() {},
-  },
-};
-</script>

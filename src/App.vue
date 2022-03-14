@@ -12,21 +12,50 @@
       <OptionsModal @close="toggleModal" :modalActive="modalActive">
         <div class="modal-content">
           &nbsp;
-          <div @click="exportData">
+          <div @click="openSaveModal" class="options-buttons">
             <img :src="require('./icons/save.svg')" class="options-icons" />
             &nbsp; Save
           </div>
-          <div @click="listToggleModal" role="button" id="list-modal-button">
+          <div
+            @click="listToggleModal"
+            role="button"
+            id="list-modal-button"
+            class="options-buttons"
+          >
             <img :src="require('./icons/list.svg')" class="options-icons" />
             &nbsp; All Programs
           </div>
-          <div>
+          <div class="options-buttons">
             <img :src="require('./icons/trash.svg')" class="options-icons" />
             &nbsp; Delete
           </div>
         </div>
       </OptionsModal>
     </div>
+    <SavingModal @close="exportData" :saveModalActive="saveModalActive">
+      <div class="save-modal-container">
+        <p>Save as:</p>
+        <input
+          v-model="programTitle"
+          type="text"
+          placeholder="Write a title for your program"
+          class="program-title-input"
+        />
+        <div class="save-modal-buttons">
+          <div
+            role="button"
+            class="save-modal-button"
+            @click="closeSaveModal"
+            :saveModalActive="saveModalActive"
+          >
+            Cancel
+          </div>
+          <div role="button" class="save-modal-button" @click="exportData">
+            Save
+          </div>
+        </div>
+      </div>
+    </SavingModal>
     <Modal @close="listToggleModal" :listModalActive="listModalActive">
       <div class="list-modal-content">
         <h2 class="programs-header">Programs</h2>
@@ -35,7 +64,7 @@
             <div class="col-xs-12">
               <div class="table-responsive" data-pattern="priority-columns">
                 <table
-                  summary="This tanle shows a list of programs created with Nodes Editor"
+                  summary="This table shows a list of programs created with Nodes Editor"
                   class="table table-bordered"
                 >
                   <thead>
@@ -53,8 +82,11 @@
                       class="list-of-programs"
                       v-for="program in listOfPrograms"
                       :key="program.id"
+                      @click="importData(program.name)"
                     >
-                      <td>{{ program.name }}</td>
+                      <td>
+                        {{ program.name }}
+                      </td>
                       <td>{{ program.date }}</td>
                     </tr>
                   </tbody>
@@ -74,6 +106,7 @@
 import { h, getCurrentInstance, render } from "vue";
 /*eslint-disable */
 import OptionsModal from "./components/OptionsModal.vue";
+import SavingModal from "./components/SavingModal.vue";
 import Modal from "./components/Modal.vue";
 import Menu from "./components/Menu.vue";
 import VariableNode from "./components/VariableNode.vue";
@@ -103,13 +136,14 @@ export default {
   name: "App",
   components: {
     Menu,
+    SavingModal,
     OptionsModal,
     Modal,
   },
   data() {
     return {
       editor: null,
-      listPrograms: [],
+      programTitle: "",
       listOfPrograms: [],
       menuItems: [
         {
@@ -158,6 +192,7 @@ export default {
           icon: forLoopIcon,
         },
       ],
+      saveModalActive: false,
       modalActive: false,
       listModalActive: false,
     };
@@ -338,14 +373,17 @@ export default {
         );
       }
     },
+    openSaveModal() {
+      this.saveModalActive = !this.saveModalActive;
+    },
     exportData() {
+      this.saveModalActive = !this.saveModalActive;
       const exportedContent = this.editor.export();
-      console.log(JSON.stringify(exportedContent));
       var myHeaders = new Headers();
       myHeaders.append("Content-Type", "application/json");
 
       const raw = JSON.stringify({
-        name: "test2",
+        name: this.programTitle,
         drawflow_output: JSON.stringify(exportedContent),
       });
 
@@ -361,7 +399,12 @@ export default {
         .then((result) => console.log(result))
         .catch((error) => console.log("error", error));
     },
-    toggleModal () {
+
+    closeSaveModal() {
+      this.saveModalActive = !this.saveModalActive;
+    },
+
+    toggleModal() {
       this.modalActive = !this.modalActive;
     },
     async listToggleModal() {
@@ -377,12 +420,41 @@ export default {
         );
         const result = await response.json();
         this.programsFirebaseResult = result;
-        console.log(`ListPrograms:`, this.programsFirebaseResult);
         this.listOfPrograms = Object.values(this.programsFirebaseResult);
+        for (let i = 0; i < this.listOfPrograms.length; i++) {
+          const date = new Date(this.listOfPrograms[i].date);
+          const formatted_date = date.toLocaleDateString();
+          this.listOfPrograms[i].date = formatted_date;
+        }
       } catch (error) {
         console.log("error", error);
       }
-    }
+    },
+
+    async importData(programName) {
+      const requestOptions = {
+        method: "GET",
+        redirect: "follow",
+      };
+      let programIdToGet = "";
+
+      try {
+        for (var element in this.listOfPrograms) {
+          if (programName === this.listOfPrograms[element].name) {
+            programIdToGet = this.listOfPrograms[element].id;
+          }
+        }
+        const response = await fetch(
+          `http://localhost:8000/programs/${programIdToGet}`,
+          requestOptions
+        );
+        const result = await response.json();
+        this.editor.import(JSON.parse(result.drawflow_output));
+        this.listModalActive = !this.listModalActive;
+      } catch (error) {
+        console.log("error", error);
+      }
+    },
   }
 };
 </script>
@@ -437,7 +509,12 @@ export default {
   height: 100%;
   width: 80%;
   border: 1px solid red;
+  background: var(--background-color);
+  background-size: 25px 25px;
+  background-image: linear-gradient(to right, #f1f1f1 1px, transparent 1px),
+    linear-gradient(to bottom, #f1f1f1 1px, transparent 1px);
 }
+
 
 #options-modal-container {
   position: absolute;
@@ -449,6 +526,7 @@ export default {
   justify-content: flex-end;
   align-items: stretch;
   width: 10%;
+  font-family: "Sora", sans-serif;
 }
 
 #options-modal-button {
@@ -474,6 +552,11 @@ export default {
   margin-top: 2px;
 }
 
+.options-buttons {
+  cursor: pointer;
+  font-weight: 300;
+}
+
 /* .options {
   font-size: 15px;
 } */
@@ -481,6 +564,28 @@ export default {
 #optionsIcon {
   height: 35px;
   width: 35px;
+}
+
+#save-modal-container {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: rgba(2, 11, 14, 0.276);
+  display: flex;
+  justify-content: center;
+  border: 5px solid green;
+  height: 100%;
+  width: 100%;
+}
+
+.save-modal {
+  border: 1px solid blue;
+  display: flex;
+  flex-direction: row;
+  flex-wrap: wrap;
+  align-content: space-around;
+  justify-content: space-around;
+  width: 50%;
 }
 
 #list-modal-container {
@@ -493,6 +598,7 @@ export default {
   border: 5px solid green;
   height: 100%;
   width: 100%;
+  font-family: "Sora", sans-serif;
 }
 
 .list-modal {
@@ -515,6 +621,7 @@ export default {
 .programs-header {
   text-align: initial;
   padding: 20px 10;
+  font-weight: 500;
 }
 
 .table {
@@ -523,13 +630,47 @@ export default {
   border: 1px solid #ddd;
   border-collapse: collapse;
 }
+
+.save-modal-container {
+  height: 80%;
+  font-family: "Sora", sans-serif;
+  font-weight: 100;
+  font-size: 15px;
+}
+
+.save-modal-buttons {
+  height: 50%;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.save-modal-button {
+  border: 1px solid #ddd;
+  align-self: end;
+  padding: 5px;
+  margin-right: 10px;
+}
+
+.program-title-input {
+  height: 25px;
+  width: 100%;
+  font-family: "Sora", sans-serif;
+  border: 1px solid #ddd;
+}
+
 /* .table-bordered {
   border: 1px solid #ddd;
 } */
 
-th,
+th {
+  border: 1px solid #ddd;
+  text-align: center;
+  font-weight: 500;
+}
+
 td {
   border: 1px solid #ddd;
   text-align: center;
+  font-weight: 300;
 }
 </style>
