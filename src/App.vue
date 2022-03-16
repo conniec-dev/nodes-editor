@@ -25,9 +25,9 @@
             <img :src="require('./icons/list.svg')" class="options-icons" />
             &nbsp; All Programs
           </div>
-          <div class="options-buttons">
+          <div @click="editor.clearModuleSelected()" class="options-buttons">
             <img :src="require('./icons/trash.svg')" class="options-icons" />
-            &nbsp; Delete
+            &nbsp; Clear
           </div>
         </div>
       </OptionsModal>
@@ -140,6 +140,7 @@ export default {
     OptionsModal,
     Modal,
   },
+  precanvas: null,
   data() {
     return {
       editor: null,
@@ -195,6 +196,7 @@ export default {
       saveModalActive: false,
       modalActive: false,
       listModalActive: false,
+      closeOnEscape: true,
     };
   },
 
@@ -455,7 +457,11 @@ export default {
         console.log("error", error);
       }
     },
-  }
+    clearModuleSelected() {
+      this.precanvas.innerHTML = "";
+      this.drawflow.drawflow[this.module] = { data: {} };
+    },
+  },
 };
 </script>
 
@@ -515,6 +521,37 @@ export default {
     linear-gradient(to bottom, #f1f1f1 1px, transparent 1px);
 }
 
+.drawflow > .drawflow-delete {
+  border: 2px solid #43b993;
+  background: white;
+  color: #43b993;
+  -webkit-box-shadow: 0 2px 20px 2px #43b993;
+  box-shadow: 0 2px 20px 2px #43b993;
+}
+
+.drawflow-delete {
+  border: 2px solid rgb(0, 0, 0);
+  background: white;
+  color: rgb(0, 0, 0);
+  -webkit-box-shadow: 0 2px 20px 2px #ddd;
+  box-shadow: 0 2px 20px 2px #ddd;
+}
+
+.drawflow .connection .main-path {
+  stroke: rgb(65, 64, 64);
+  stroke-width: 3px;
+}
+
+.drawflow .connection .point {
+  stroke: var(--border-color);
+  stroke-width: 2;
+  fill: white;
+  transform: translate(-9999px, -9999px);
+} 
+
+.drawflow .connection .point.selected, .drawflow .connection .point:hover {
+  fill: #ddd;
+} 
 
 #options-modal-container {
   position: absolute;
